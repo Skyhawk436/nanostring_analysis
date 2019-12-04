@@ -40,20 +40,23 @@ def load_rcc(directory):
     return data
 
 
-def get_annotations(directory):# create sample annotation dataframe if 'annotations' file is in the directory
+def get_annotations(directory):# create sample annotation dataframe if 'annotations.csv' file is in the directory
 
     os.chdir(directory)
-
-    for file in os.listdir():
-        if 'annotations' in file:
+    
+    if 'annotations.csv' in os.listdir():
+        file = 'annotations.csv'
+        try:
             annotations = pd.read_csv('{}'.format(file))
             print('\nSample annotations created from {} file'.format(file))
             return annotations
-        
-        else:
-            print('\n    Note: No annotation file was found in this directory')
+        except:
+            print('\n Could not create sample annotations table from file')
     
-            return None
+    else:
+        print('\n    Note: No annotation file was found in this directory')
+
+        return None
     
 def pos_qc(data):
 
@@ -127,18 +130,22 @@ def hk_normalize(data, annotations, save_directory):
     log2_norm = np.log2(normdata).reset_index()
 
     #merge dataframe with sample annotation file if it exists:
-    if annotations:
+    try:
 
         log2_norm_annot = log2_norm.merge(annotations, left_on="RCC", right_on = "RCC",how='left')
 
-        log2_norm_annot.to_csv(save_directory + '/log2_normalized_data.csv')
+        log2_norm_annot.to_csv(save_directory + '/log2_normalized_annotated_data.csv')
+        print('Log2-normalized dataframe created:\n')
         print(log2_norm_annot.head(3))
+        print('\nLog2-HK-normalized-annotated-data saved to: {}'.format(save_directory))
         
-    else:
+    except:
         log2_norm.to_csv(save_directory + '/log2_normalized_data.csv')
+        print('Log2-normalized dataframe created:\n')
         print(log2_norm.head(3))
+        print('\nLog2-HK-normalized data saved to: {}'.format(save_directory))
 
-    print('\nLog2-HK-normalized data saved to: {}'.format(save_directory))
+    
     print('\n')
 
 ##    groups = list(log2_norm_annot['sample_id'].unique())
@@ -150,7 +157,7 @@ def hk_normalize(data, annotations, save_directory):
 def process_rcc_data():
     
     print('\n\n')
-    print("--------------------- Load and analyse Nanostring RCC data ------------------------")
+    print("--------------------- Load and analyze Nanostring RCC data ------------------------")
     print('\n')
 
     directory = input(r'Enter the path to RCC directory: ')
