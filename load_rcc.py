@@ -147,11 +147,12 @@ def hk_normalize(data, annotations, save_directory):
 
     
     print('\n')
-
+##      TODO: create a clustermap of normalized data, needs work this is the basic outline:
 ##    groups = list(log2_norm_annot['sample_id'].unique())
 ##    colors = sns.xkcd_palette(["windows blue", "amber", "greyish", "faded green", "dusty purple"])
-##    group_colors = colors[:len(groups)]
-##    sns.clustermap(log2_norm_annot.set_index('RCC').T, z_score=0, cmap='bwr',col_colors = group_colors, figsize=(10,8))
+##    group_colors = dict(zip(groups, colors))
+##    mapping = log2_norm_annot['sample_id'].map(group_colors)    
+##    sns.clustermap(log2_norm_annot.loc[:,genes].T, z_score=0, cmap='bwr',col_colors = mapping, figsize=(10,8))
 
 
 def process_rcc_data():
